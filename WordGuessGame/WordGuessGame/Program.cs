@@ -17,8 +17,29 @@ namespace WordGuessGame
                 mainSelection = VerifyMainMenuInput(mainMenuInput);
             }
 
+            int count = 0; // Protect against infinite loops while testing **remove after solved**
+            while (mainSelection != 3 && count < 10)
+            {
+                switch (mainSelection)
+                {
+                    case 1:
+                        Console.WriteLine("You hit 1!");
+                        break;
+                    case 2:
+                        Console.WriteLine("You hit 2!");
+                        break;
+                    case 3:
+                        Console.WriteLine("Bye!");
+                        break;
+                }
+
+                count++;
+            }
+
             Console.ReadLine();
         }
+        
+        // End of Main
 
         private static void WelcomeMessage()
         {
