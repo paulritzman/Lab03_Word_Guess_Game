@@ -8,7 +8,14 @@ namespace WordGuessGame
         {
             WelcomeMessage();
 
-            MainMenu();
+            string mainMenuInput = "";
+            uint mainSelection = 0;
+            while(mainSelection == 0)
+            {
+                MainMenu();
+                mainMenuInput = Console.ReadLine();
+                mainSelection = VerifyMainMenuInput(mainMenuInput);
+            }
 
             Console.ReadLine();
         }
@@ -33,10 +40,15 @@ namespace WordGuessGame
             
             if (isValid && (numericInput >= 1 && numericInput <= 3))
             {
+                Console.Clear();
                 return numericInput;
             }
-
-            return 0;
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Sorry, that was not a valid menu option.\n");
+                return 0;
+            }
         }
     }
 }
