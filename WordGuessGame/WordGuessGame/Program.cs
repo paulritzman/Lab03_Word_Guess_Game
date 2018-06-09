@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace WordGuessGame
 {
@@ -7,6 +8,7 @@ namespace WordGuessGame
         public static void Main(string[] args)
         {
             WelcomeMessage();
+            CreateWordBank();
 
             uint mainSelection = 0;
             do
@@ -30,8 +32,25 @@ namespace WordGuessGame
 
             Console.ReadLine();
         }
-        
+
         // End of Main
+
+        private static void CreateWordBank()
+        {
+            string filePath = "../../../../../wordbank.txt";
+            if (!File.Exists(filePath))
+            {
+                try
+                {
+                    File.Create(filePath);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"An error occurred: {e.Message} While trying to create the word bank.\n" +
+                        $"Please try restarting the program.");
+                }
+            }
+        }
 
         private static void WelcomeMessage()
         {
@@ -89,9 +108,7 @@ namespace WordGuessGame
             }
         }
 
-        // Edit Menu Below
-
-        public static void EditWordBank()
+        private static void EditWordBank()
         {
             Console.Clear();
 
