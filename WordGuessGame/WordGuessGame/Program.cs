@@ -20,8 +20,7 @@ namespace WordGuessGame
                         Environment.Exit(0);
                         break;
                     case 2:
-                        Console.WriteLine("You hit 2!");
-                        Environment.Exit(0);
+                        EditWordBank();
                         break;
                     case 3:
                         Environment.Exit(0);
@@ -75,7 +74,6 @@ namespace WordGuessGame
                 {
                     return true;
                 }
-
                 else
                 {
                     Console.Clear();
@@ -88,6 +86,71 @@ namespace WordGuessGame
                 Console.Clear();
                 Console.WriteLine("Sorry, that didn't match one of the menu options. Please try again.\n");
                 return false;
+            }
+        }
+
+        // Edit Menu Below
+
+        public static void EditWordBank()
+        {
+            Console.Clear();
+
+            string editMenuInput = "";
+            uint optionSelected = 0;
+
+            do
+            {
+                PrintEditMenu();
+
+                editMenuInput = Console.ReadLine();
+                optionSelected = ValidatedEditMenuInput(editMenuInput);
+
+                switch (optionSelected)
+                {
+                    case 1:
+                        Console.Clear();
+                        Console.WriteLine("Viewing words...");
+                        break;
+                    case 2:
+                        Console.Clear();
+                        Console.WriteLine("Adding words...");
+                        break;
+                    case 3:
+                        Console.Clear();
+                        Console.WriteLine("Resetting words...");
+                        break;
+                    case 4:
+                        Console.Clear();
+                        break;
+                    default:
+                        Console.Clear();
+                        Console.WriteLine("Sorry, that didn't match one of the menu options.\n");
+                        break;
+                }
+            } while (optionSelected != 4);
+        }
+
+        private static void PrintEditMenu()
+        {
+            Console.WriteLine(
+                "Select an option from the menu below to manage the word bank for the guessing game:\n" +
+                "1) View words in word bank\n" +
+                "2) Add a word to the word bank\n" +
+                "3) Reset the word bank to the default words\n" +
+                "4) Return to main menu\n");
+        }
+
+        public static uint ValidatedEditMenuInput(string userInput)
+        {
+            bool isValid = uint.TryParse(userInput, out uint menuOptionSelected);
+
+            if (isValid && (menuOptionSelected >= 1 && menuOptionSelected <= 4))
+            {
+                return menuOptionSelected;
+            }
+            else
+            {
+                return 0;
             }
         }
     }
