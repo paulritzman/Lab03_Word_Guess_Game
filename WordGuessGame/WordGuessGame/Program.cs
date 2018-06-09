@@ -8,33 +8,26 @@ namespace WordGuessGame
         {
             WelcomeMessage();
 
-            string mainMenuInput = "";
             uint mainSelection = 0;
-            while(mainSelection == 0)
+            do
             {
-                MainMenu();
-                mainMenuInput = Console.ReadLine();
-                mainSelection = VerifyMainMenuInput(mainMenuInput);
-            }
+                mainSelection = ValidatedMainMenuInput();
 
-            int count = 0; // Protect against infinite loops while testing **remove after solved**
-            while (mainSelection != 3 && count < 10)
-            {
                 switch (mainSelection)
                 {
                     case 1:
                         Console.WriteLine("You hit 1!");
+                        Environment.Exit(0);
                         break;
                     case 2:
                         Console.WriteLine("You hit 2!");
+                        Environment.Exit(0);
                         break;
                     case 3:
-                        Console.WriteLine("Bye!");
+                        Environment.Exit(0);
                         break;
                 }
-
-                count++;
-            }
+            } while (mainSelection != 3);
 
             Console.ReadLine();
         }
@@ -46,7 +39,23 @@ namespace WordGuessGame
             Console.WriteLine("\tWelcome to the \"Guess the Word!\"\n");
         }
 
-        private static void MainMenu()
+        public static uint ValidatedMainMenuInput()
+        {
+            string mainMenuInput = "";
+            bool isValid = false;
+
+            while (isValid == false)
+            {
+                PrintMainMenu();
+                mainMenuInput = Console.ReadLine();
+
+                isValid = checkMainMenuInput(mainMenuInput);
+            }
+
+            return uint.Parse(mainMenuInput);
+        }
+
+        private static void PrintMainMenu()
         {
             Console.WriteLine(
                 "Please select one of the options below:\n" +
@@ -55,20 +64,30 @@ namespace WordGuessGame
                 "3) Exit\n");
         }
 
-        public static uint VerifyMainMenuInput(string mainMenuInput)
+        public static bool checkMainMenuInput(string userInput)
         {
-            bool isValid = uint.TryParse(mainMenuInput, out uint numericInput);
-            
-            if (isValid && (numericInput >= 1 && numericInput <= 3))
+            uint inputNum = 0;
+            try
             {
-                Console.Clear();
-                return numericInput;
+                inputNum = uint.Parse(userInput);
+
+                if (inputNum >= 1 && inputNum <= 3)
+                {
+                    return true;
+                }
+
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("Sorry, that number didn't match one of the menu options.\n");
+                    return false;
+                }
             }
-            else
+            catch (Exception)
             {
                 Console.Clear();
-                Console.WriteLine("Sorry, that was not a valid menu option.\n");
-                return 0;
+                Console.WriteLine("Sorry, that didn't match one of the menu options. Please try again.\n");
+                return false;
             }
         }
     }
