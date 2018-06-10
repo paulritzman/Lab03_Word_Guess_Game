@@ -320,7 +320,7 @@ namespace WordGuessGame
                 {
                     allGuesses += userGuess;
 
-                    if (randomWord.ToLower().Contains(userGuess.ToLower()))
+                    if (randomWord.Contains(userGuess))
                     {
                         guessedWord += userGuess;
                     }
@@ -371,11 +371,9 @@ namespace WordGuessGame
 
             try
             {
-                string userGuessLower = userGuess.ToLower();
-
-                foreach (char c in userGuessLower.ToCharArray())
+                foreach (char c in userGuess.ToCharArray())
                 {
-                    if (!(c >= 65 && c <= 90))
+                    if (!(c >= 65 && c <= 90) && !(c >= 97 && c <= 122))
                     {
                         return false;
                     }
