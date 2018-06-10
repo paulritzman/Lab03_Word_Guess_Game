@@ -18,8 +18,7 @@ namespace WordGuessGame
                 switch (mainSelection)
                 {
                     case 1:
-                        Console.WriteLine("You hit 1!");
-                        Environment.Exit(0);
+                        PlayGame();
                         break;
                     case 2:
                         WordBankMenu();
@@ -40,6 +39,7 @@ namespace WordGuessGame
             Console.Clear();
 
             string wordBankMenuInput = "";
+            string allWords = "";
             uint optionSelected = 0;
 
             do
@@ -54,7 +54,11 @@ namespace WordGuessGame
                 switch (optionSelected)
                 {
                     case 1:
-                        ViewWordBank();
+                        allWords = ViewWordBank();
+                        if (allWords.Length > 0)
+                        {
+                            Console.WriteLine(allWords);
+                        }
                         break;
                     case 2:
                         UpdateWordBank();
@@ -100,7 +104,7 @@ namespace WordGuessGame
             }
         }
 
-        private static void ViewWordBank()
+        private static string ViewWordBank()
         {
             string filePath = "../../../../../wordbank.txt";
 
@@ -109,12 +113,13 @@ namespace WordGuessGame
                 using (StreamReader sr = new StreamReader(filePath))
                 {
                     string wordBank = sr.ReadToEnd();
-                    Console.WriteLine(wordBank);
+                    return wordBank;
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine($"The word bank could not be read: {e.Message}\n");
+                return "";
             }
         }
 
@@ -153,6 +158,11 @@ namespace WordGuessGame
 
         public static bool checkUpdateWordBankInput(string inputWord)
         {
+            if (inputWord.Length == 0)
+            {
+                return false;
+            }
+
             try
             {
                 foreach (char c in inputWord.ToCharArray())
@@ -270,6 +280,126 @@ namespace WordGuessGame
             }
         }
 
+        public static void PlayGame()
+        {
+            Console.Clear();
 
+            string randomWord = ChooseRandomWord();
+            string userGuess = "", allGuesses = "", guessedWord = "";
+
+            uint incorrectGuessesLeft = 3;
+
+            do
+            {
+                Console.WriteLine(randomWord);
+
+                foreach (char c in randomWord.ToLower())
+                {
+                    if (!allGuesses.ToLower().Contains(c))
+                    {
+                        Console.Write("_ ");
+                    }
+                    else
+                    {
+                        Console.Write($"{c} ");
+                    }
+                }
+
+                Console.WriteLine(allGuesses);
+                Console.WriteLine($"Guesses Left: {incorrectGuessesLeft}");
+                Console.WriteLine();
+                
+                Console.WriteLine("Guess a letter:\n");
+                userGuess = Console.ReadLine();
+
+                Console.Clear();
+
+                bool guessIsValid = checkGameInput(userGuess);
+
+                if (guessIsValid && !allGuesses.Contains(userGuess))
+                {
+                    allGuesses += userGuess;
+
+                    if (randomWord.ToLower().Contains(userGuess.ToLower()))
+                    {
+                        guessedWord += userGuess;
+                    }
+                    else
+                    {
+                        incorrectGuessesLeft--;
+                    }
+                }
+                else if (allGuesses.Contains(userGuess) && userGuess.Length > 0)
+                {
+                    Console.WriteLine("You already guessed that letter.\n");
+                }
+                else
+                {
+                    Console.WriteLine("Guesses must consist of a single letter.\n");
+                    incorrectGuessesLeft--;
+                }
+            } while (guessedWord.Length != randomWord.Length && incorrectGuessesLeft > 0);
+
+            Console.Clear();
+            DecideWinner(incorrectGuessesLeft);
+        }
+
+        public static string ChooseRandomWord()
+        {
+            string filePath = "../../../../../wordbank.txt";
+            Random randomLineNumber = new Random();
+
+            try
+            {
+                string[] wordArray = File.ReadAllLines(filePath);
+
+                return wordArray[randomLineNumber.Next(1, wordArray.Length)];
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"The word bank could not be read: {e.Message}\n");
+                return "";
+            }
+        }
+
+        public static bool checkGameInput(string userGuess)
+        {
+            if (userGuess.Length != 1)
+            {
+                return false;
+            }
+
+            try
+            {
+                string userGuessLower = userGuess.ToLower();
+
+                foreach (char c in userGuessLower.ToCharArray())
+                {
+                    if (!(c >= 65 && c <= 90))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unable to process your guess: {e.Message}");
+                return false;
+            }
+        }
+
+        public static void DecideWinner(uint incorrectGuessesLeft)
+        {
+            if (incorrectGuessesLeft > 0)
+            {
+                Console.WriteLine("You won!\n");
+            }
+            else
+            {
+                Console.WriteLine("You lose...\n");
+            }
+        }
     }
 }
