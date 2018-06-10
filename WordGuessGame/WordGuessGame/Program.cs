@@ -286,6 +286,7 @@ namespace WordGuessGame
 
             string randomWord = ChooseRandomWord();
             string userGuess = "", allGuesses = "", guessedWord = "";
+            bool guessIsValid = false, doStringsMatch = false;
 
             uint incorrectGuessesLeft = 3;
 
@@ -293,9 +294,9 @@ namespace WordGuessGame
             {
                 Console.WriteLine(randomWord);
 
-                foreach (char c in randomWord.ToLower())
+                foreach (char c in randomWord)
                 {
-                    if (!allGuesses.ToLower().Contains(c))
+                    if (!allGuesses.ToLower().Contains(char.ToLower(c)))
                     {
                         Console.Write("_ ");
                     }
@@ -314,13 +315,13 @@ namespace WordGuessGame
 
                 Console.Clear();
 
-                bool guessIsValid = checkGameInput(userGuess);
+                guessIsValid = checkGameInput(userGuess);
 
                 if (guessIsValid && !allGuesses.Contains(userGuess))
                 {
                     allGuesses += userGuess;
 
-                    if (randomWord.Contains(userGuess))
+                    if (randomWord.ToLower().Contains(userGuess.ToLower()))
                     {
                         guessedWord += userGuess;
                     }
@@ -338,7 +339,9 @@ namespace WordGuessGame
                     Console.WriteLine("Guesses must consist of a single letter.\n");
                     incorrectGuessesLeft--;
                 }
-            } while (guessedWord.Length != randomWord.Length && incorrectGuessesLeft > 0);
+
+                doStringsMatch = CompareStrings(randomWord, guessedWord);
+            } while (doStringsMatch == false && incorrectGuessesLeft > 0);
 
             Console.Clear();
             DecideWinner(incorrectGuessesLeft);
@@ -386,6 +389,22 @@ namespace WordGuessGame
                 Console.WriteLine($"Unable to process your guess: {e.Message}");
                 return false;
             }
+        }
+
+        public static bool CompareStrings(string randomWord, string guessedWord)
+        {
+            string wordToGuess = randomWord.ToLower();
+            string guesses = guessedWord.ToLower();
+
+            foreach (char c in wordToGuess)
+            {
+                if (!guesses.Contains(c))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public static void DecideWinner(uint incorrectGuessesLeft)
