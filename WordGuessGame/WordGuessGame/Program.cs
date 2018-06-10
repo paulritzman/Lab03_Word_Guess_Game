@@ -321,7 +321,7 @@ namespace WordGuessGame
 
                 Console.Clear();
 
-                guessIsValid = checkGameInput(userGuess);
+                guessIsValid = CheckGameInput(userGuess);
 
                 if (guessIsValid && !allGuesses.Contains(userGuess))
                 {
@@ -350,7 +350,16 @@ namespace WordGuessGame
             } while (doStringsMatch == false && incorrectGuessesLeft > 0);
 
             Console.Clear();
-            DecideWinner(incorrectGuessesLeft);
+
+            bool isWinner = DecideWinner(incorrectGuessesLeft);
+            if (isWinner)
+            {
+                Console.WriteLine("You won!\n");
+            }
+            else
+            {
+                Console.WriteLine("You lose...\n");
+            }
         }
 
         public static string ChooseRandomWord()
@@ -371,7 +380,7 @@ namespace WordGuessGame
             }
         }
 
-        public static bool checkGameInput(string userGuess)
+        public static bool CheckGameInput(string userGuess)
         {
             if (userGuess.Length != 1)
             {
@@ -413,15 +422,15 @@ namespace WordGuessGame
             return true;
         }
 
-        public static void DecideWinner(uint incorrectGuessesLeft)
+        public static bool DecideWinner(uint incorrectGuessesLeft)
         {
             if (incorrectGuessesLeft > 0)
             {
-                Console.WriteLine("You won!\n");
+                return true;
             }
             else
             {
-                Console.WriteLine("You lose...\n");
+                return false;
             }
         }
     }
