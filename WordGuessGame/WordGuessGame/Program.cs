@@ -8,11 +8,12 @@ namespace WordGuessGame
         public static void Main(string[] args)
         {
             WelcomeMessage();
-            CreateWordBank();
 
             uint mainSelection = 0;
             do
             {
+                CreateWordBank();
+
                 mainSelection = ValidatedMainMenuInput();
 
                 switch (mainSelection)
@@ -46,7 +47,8 @@ namespace WordGuessGame
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"An error occurred: {e.Message} While trying to create the word bank.\n" +
+                    Console.WriteLine(
+                        $"An error occurred: {e.Message} While trying to create the word bank.\n" +
                         $"Please try restarting the program.");
                 }
             }
@@ -134,7 +136,8 @@ namespace WordGuessGame
                         break;
                     case 3:
                         Console.Clear();
-                        Console.WriteLine("Resetting words...");
+                        DeleteWordBank();
+                        Console.WriteLine("Word bank reset!\n");
                         break;
                     case 4:
                         Console.Clear();
@@ -144,7 +147,7 @@ namespace WordGuessGame
                         Console.WriteLine("Sorry, that didn't match one of the menu options.\n");
                         break;
                 }
-            } while (optionSelected != 4);
+            } while (optionSelected != 3 && optionSelected != 4);
         }
 
         private static void PrintEditMenu()
@@ -153,7 +156,7 @@ namespace WordGuessGame
                 "Select an option from the menu below to manage the word bank for the guessing game:\n" +
                 "1) View words in word bank\n" +
                 "2) Add a word to the word bank\n" +
-                "3) Reset the word bank to the default words\n" +
+                "3) Reset the word bank to the default words, and return to main menu\n" +
                 "4) Return to main menu\n");
         }
 
@@ -170,5 +173,23 @@ namespace WordGuessGame
                 return 0;
             }
         }
+
+        public static void DeleteWordBank()
+        {
+            string filePath = "../../../../../wordbank.txt";
+
+            try
+            {
+                File.Delete(filePath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(
+                    $"An error occurred: {e.Message} While trying to reset the word bank.\n" +
+                    $"Please try resetting it again.");
+            }
+        }
+
+
     }
 }
