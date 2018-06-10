@@ -49,26 +49,23 @@ namespace WordGuessGame
                 wordBankMenuInput = Console.ReadLine();
                 optionSelected = ValidatedWordBankMenuInput(wordBankMenuInput);
 
+                Console.Clear();
+
                 switch (optionSelected)
                 {
                     case 1:
-                        Console.Clear();
                         ViewWordBank();
                         break;
                     case 2:
-                        Console.Clear();
-                        Console.WriteLine("Adding words...");
+                        UpdateWordBank();
                         break;
                     case 3:
-                        Console.Clear();
                         ResetWordBank();
                         break;
                     case 4:
-                        Console.Clear();
                         break;
                     default:
-                        Console.Clear();
-                        Console.WriteLine("Sorry, that didn't match one of the menu options.\n");
+                        Console.WriteLine("Sorry, that didn't match any of the menu options.\n");
                         break;
                 }
             } while (optionSelected != 4);
@@ -98,8 +95,7 @@ namespace WordGuessGame
                 catch (Exception e)
                 {
                     Console.WriteLine(
-                        $"An error occurred: {e.Message} While trying to create the word bank.\n" +
-                        $"Please try restarting the program.");
+                        $"Unable to create word bank: {e.Message}\n");
                 }
             }
         }
@@ -118,7 +114,30 @@ namespace WordGuessGame
             }
             catch (Exception e)
             {
-                Console.WriteLine($"The word bank could not be read: {e.Message}");
+                Console.WriteLine($"The word bank could not be read: {e.Message}\n");
+            }
+        }
+
+        private static void UpdateWordBank()
+        {
+            string filePath = "../../../../../wordbank.txt";
+
+            Console.WriteLine("What would you like to add?\n");
+            string input = Console.ReadLine();
+
+            try
+            {
+                using (StreamWriter sw = File.AppendText(filePath))
+                {
+                    sw.WriteLine(input);
+
+                    Console.Clear();
+                    Console.WriteLine("Your word has been added to the word bank.\n");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Unable to add a word at this time: {e.Message}\n");
             }
         }
 
@@ -136,8 +155,7 @@ namespace WordGuessGame
             catch (Exception e)
             {
                 Console.WriteLine(
-                    $"An error occurred: {e.Message} While trying to reset the word bank.\n" +
-                    $"Please try resetting it again.");
+                    $"The word bank could not be reset: {e.Message}\n");
             }
         }
 
