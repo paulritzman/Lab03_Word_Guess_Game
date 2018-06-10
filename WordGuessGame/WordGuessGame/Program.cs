@@ -13,7 +13,7 @@ namespace WordGuessGame
             uint mainSelection = 0;
             do
             {
-                mainSelection = ValidatedMainMenuInput();
+                mainSelection = ValidatedMainMenuSelection();
 
                 switch (mainSelection)
                 {
@@ -47,7 +47,7 @@ namespace WordGuessGame
                 PrintWordBankMenu();
 
                 wordBankMenuInput = Console.ReadLine();
-                optionSelected = ValidatedWordBankMenuInput(wordBankMenuInput);
+                optionSelected = ValidatedWordBankMenuSelection(wordBankMenuInput);
 
                 Console.Clear();
 
@@ -123,21 +123,52 @@ namespace WordGuessGame
             string filePath = "../../../../../wordbank.txt";
 
             Console.WriteLine("What would you like to add?\n");
-            string input = Console.ReadLine();
+            string newWord = Console.ReadLine();
+            bool newWordIsValid = checkUpdateWordBankInput(newWord);
 
+            if (newWordIsValid)
+            {
+                try
+                {
+                    using (StreamWriter sw = File.AppendText(filePath))
+                    {
+                        sw.WriteLine(newWord);
+
+                        Console.Clear();
+                        Console.WriteLine("Your word has been added to the word bank.\n");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Unable to add a word at this time: {e.Message}\n");
+                }
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Unable to add word, must only contain letters.\n");
+            }
+        }
+
+        public static bool checkUpdateWordBankInput(string inputWord)
+        {
             try
             {
-                using (StreamWriter sw = File.AppendText(filePath))
+                foreach (char c in inputWord.ToCharArray())
                 {
-                    sw.WriteLine(input);
-
-                    Console.Clear();
-                    Console.WriteLine("Your word has been added to the word bank.\n");
+                    if (!(c >= 65 && c <= 90) && !(c >= 97 && c <= 122))
+                    {
+                        return false;
+                    }
                 }
+
+                return true;
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Unable to add a word at this time: {e.Message}\n");
+                Console.WriteLine($"Unable to add word to word bank: {e.Message}");
+                return false;
             }
         }
 
@@ -164,7 +195,7 @@ namespace WordGuessGame
             Console.WriteLine("\tWelcome to the \"Guess the Word!\"\n");
         }
 
-        public static uint ValidatedMainMenuInput()
+        public static uint ValidatedMainMenuSelection()
         {
             string mainMenuInput = "";
             bool isValid = false;
@@ -203,14 +234,14 @@ namespace WordGuessGame
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("Sorry, that number didn't match one of the menu options.\n");
+                    Console.WriteLine("Sorry, that number didn't match any of the menu options.\n");
                     return false;
                 }
             }
             catch (Exception)
             {
                 Console.Clear();
-                Console.WriteLine("Sorry, that didn't match one of the menu options. Please try again.\n");
+                Console.WriteLine("Sorry, that didn't match any of the menu options. Please try again.\n");
                 return false;
             }
         }
@@ -225,9 +256,9 @@ namespace WordGuessGame
                 "4) Return to main menu\n");
         }
 
-        public static uint ValidatedWordBankMenuInput(string userInput)
+        public static uint ValidatedWordBankMenuSelection(string wordBankMenuInput)
         {
-            bool isValid = uint.TryParse(userInput, out uint menuOptionSelected);
+            bool isValid = uint.TryParse(wordBankMenuInput, out uint menuOptionSelected);
 
             if (isValid && (menuOptionSelected >= 1 && menuOptionSelected <= 4))
             {
