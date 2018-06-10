@@ -22,7 +22,7 @@ namespace WordGuessGame
                         Environment.Exit(0);
                         break;
                     case 2:
-                        EditWordBank();
+                        WordBankMenu();
                         break;
                     case 3:
                         Environment.Exit(0);
@@ -34,6 +34,45 @@ namespace WordGuessGame
         }
 
         // End of Main
+
+        private static void WordBankMenu()
+        {
+            Console.Clear();
+
+            string wordBankMenuInput = "";
+            uint optionSelected = 0;
+
+            do
+            {
+                PrintWordBankMenu();
+
+                wordBankMenuInput = Console.ReadLine();
+                optionSelected = ValidatedWordBankMenuInput(wordBankMenuInput);
+
+                switch (optionSelected)
+                {
+                    case 1:
+                        Console.Clear();
+                        ViewWordBank();
+                        break;
+                    case 2:
+                        Console.Clear();
+                        Console.WriteLine("Adding words...");
+                        break;
+                    case 3:
+                        Console.Clear();
+                        ResetWordBank();
+                        break;
+                    case 4:
+                        Console.Clear();
+                        break;
+                    default:
+                        Console.Clear();
+                        Console.WriteLine("Sorry, that didn't match one of the menu options.\n");
+                        break;
+                }
+            } while (optionSelected != 4);
+        }
 
         private static void CreateWordBank()
         {
@@ -51,8 +90,8 @@ namespace WordGuessGame
                         sw.WriteLine("carefully");
                         sw.WriteLine("programmatically");
                         sw.WriteLine("language");
-                        sw.WriteLine("Seattle");
                         sw.WriteLine("Honorificabilitudinitatibus");
+                        sw.WriteLine("floccinaucinihilipilification");
                         sw.WriteLine("Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch");
                     };
                 }
@@ -64,7 +103,25 @@ namespace WordGuessGame
                 }
             }
         }
-        
+
+        private static void ViewWordBank()
+        {
+            string filePath = "../../../../../wordbank.txt";
+
+            try
+            {
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    string wordBank = sr.ReadToEnd();
+                    Console.WriteLine(wordBank);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"The word bank could not be read: {e.Message}");
+            }
+        }
+
         public static void ResetWordBank()
         {
             string filePath = "../../../../../wordbank.txt";
@@ -140,46 +197,7 @@ namespace WordGuessGame
             }
         }
 
-        private static void EditWordBank()
-        {
-            Console.Clear();
-
-            string editMenuInput = "";
-            uint optionSelected = 0;
-
-            do
-            {
-                PrintEditMenu();
-
-                editMenuInput = Console.ReadLine();
-                optionSelected = ValidatedEditMenuInput(editMenuInput);
-
-                switch (optionSelected)
-                {
-                    case 1:
-                        Console.Clear();
-                        Console.WriteLine("Viewing words...");
-                        break;
-                    case 2:
-                        Console.Clear();
-                        Console.WriteLine("Adding words...");
-                        break;
-                    case 3:
-                        Console.Clear();
-                        ResetWordBank();
-                        break;
-                    case 4:
-                        Console.Clear();
-                        break;
-                    default:
-                        Console.Clear();
-                        Console.WriteLine("Sorry, that didn't match one of the menu options.\n");
-                        break;
-                }
-            } while (optionSelected != 4);
-        }
-
-        private static void PrintEditMenu()
+        private static void PrintWordBankMenu()
         {
             Console.WriteLine(
                 "Select an option from the menu below to manage the word bank for the guessing game:\n" +
@@ -189,7 +207,7 @@ namespace WordGuessGame
                 "4) Return to main menu\n");
         }
 
-        public static uint ValidatedEditMenuInput(string userInput)
+        public static uint ValidatedWordBankMenuInput(string userInput)
         {
             bool isValid = uint.TryParse(userInput, out uint menuOptionSelected);
 
